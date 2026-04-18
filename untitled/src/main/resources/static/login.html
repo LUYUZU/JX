@@ -1,0 +1,332 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生管理系统 - 登录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 400px;
+            max-width: 90%;
+            padding: 40px;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .login-header i {
+            font-size: 60px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .login-header p {
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .input-group:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group i {
+            padding: 0 15px;
+            color: #999;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px 15px 12px 0;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .test-accounts {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .test-accounts h4 {
+            color: #666;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .account-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .account-item .role {
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .account-item .details {
+            flex: 1;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .account-item i {
+            color: #28a745;
+            cursor: pointer;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="login-container">
+    <div class="login-header">
+        <i class="fas fa-graduation-cap"></i>
+        <h1>学生信息管理系统</h1>
+        <p>请登录您的账号</p>
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label><i class="fas fa-user"></i> 用户名</label>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="请输入用户名" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-lock"></i> 密码</label>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="请输入密码" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+            <span>登录</span>
+            <span class="loading" id="loading"></span>
+        </button>
+    </form>
+
+    <div class="test-accounts">
+        <h4>测试账号</h4>
+        <div class="account-item">
+            <span class="role">管理员</span>
+            <span class="details">admin / 123456</span>
+            <i class="fas fa-copy" onclick="copyAccount('admin', '123456')" title="复制账号"></i>
+        </div>
+        <div class="account-item">
+            <span class="role">学生</span>
+            <span class="details">zhangsan / 123456</span>
+            <i class="fas fa-copy" onclick="copyAccount('zhangsan', '123456')" title="复制账号"></i>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080/api';
+
+    // 处理登录
+    async function handleLogin(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const loginBtn = document.getElementById('loginBtn');
+        const loading = document.getElementById('loading');
+
+        if (!username || !password) {
+            showError('请输入用户名和密码');
+            return;
+        }
+
+        // 显示加载状态
+        loginBtn.disabled = true;
+        loading.style.display = 'inline-block';
+        hideError();
+
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // 保存令牌和用户信息
+                localStorage.setItem('token', result.token);
+                localStorage.setItem('user', JSON.stringify(result.user));
+
+                // 跳转到主页面
+                window.location.href = 'student.html';
+            } else {
+                showError(result.message || '登录失败');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showError('网络错误，请检查后端服务是否启动');
+        } finally {
+            loginBtn.disabled = false;
+            loading.style.display = 'none';
+        }
+    }
+
+    // 显示错误
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    // 隐藏错误
+    function hideError() {
+        document.getElementById('errorMessage').style.display = 'none';
+    }
+
+    // 复制账号
+    function copyAccount(username, password) {
+        document.getElementById('username').value = username;
+        document.getElementById('password').value = password;
+    }
+
+    // 检查是否已登录
+    window.onload = function() {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // 验证令牌是否有效
+            fetch(`${API_URL}/auth/verify`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        window.location.href = 'student.html';
+                    }
+                })
+                .catch(() => {});
+        }
+    };
+</script>
+</body>
+</html>
