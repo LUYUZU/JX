@@ -10,7 +10,7 @@
             <i class="fas fa-user-circle"></i>
             {{ auth.user?.realName }} ({{ auth.isAdmin ? '管理员' : '学生' }})
           </span>
-          <button class="btn-logout" @click="logout">
+          <button class="btn btn-secondary" @click="logout">
             <i class="fas fa-sign-out-alt"></i> 退出登录
           </button>
         </div>
@@ -51,10 +51,10 @@
           </template>
 
           <div class="filter-actions">
-            <button class="btn-search" @click="search">
+            <button class="btn btn-primary" @click="search">
               <i class="fas fa-search"></i> 搜索
             </button>
-            <button class="btn-reset" @click="resetFilters">
+            <button class="btn btn-secondary" @click="resetFilters">
               <i class="fas fa-undo"></i> 重置
             </button>
           </div>
@@ -69,10 +69,10 @@
         <!-- 工具栏 -->
         <div class="toolbar">
           <div class="toolbar-left">
-            <button v-if="auth.isAdmin" class="btn-add" @click="openAddModal">
+            <button v-if="auth.isAdmin" class="btn btn-primary" @click="openAddModal">
               <i class="fas fa-plus"></i> 新增学生
             </button>
-            <button class="refresh-btn" @click="loadStudents">
+            <button class="btn btn-secondary" @click="loadStudents">
               <i class="fas fa-sync-alt"></i> 刷新数据
             </button>
           </div>
@@ -82,7 +82,7 @@
         <!-- 表格 -->
         <div class="table-container">
           <div v-if="loading" class="loading">
-            <i class="fas fa-spinner fa-spin fa-2x" style="color:#667eea;"></i>
+            <i class="fas fa-spinner fa-spin fa-2x loading-icon"></i>
             <p>加载中...</p>
           </div>
 
@@ -102,18 +102,18 @@
                   <th>邮箱</th>
                   <th>入学日期</th>
                   <th>状态</th>
-                  <th v-if="auth.isAdmin">操作</th>
+                  <th v-if="auth.isAdmin" class="action-cell">操作</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="s in paginatedStudents" :key="s.studentId">
                   <td>{{ s.studentId }}</td>
-                  <td><strong>{{ s.studentName }}</strong></td>
-                  <td>{{ s.studentNumber }}</td>
+                  <td class="cell-primary">{{ s.studentName }}</td>
+                  <td class="cell-primary">{{ s.studentNumber }}</td>
                   <td>{{ s.gender || '-' }}</td>
                   <td>{{ s.age || '-' }}</td>
-                  <td>{{ s.major || '-' }}</td>
-                  <td>{{ s.grade || '-' }}</td>
+                  <td class="cell-secondary">{{ s.major || '-' }}</td>
+                  <td class="cell-secondary">{{ s.grade || '-' }}</td>
                   <td>{{ s.email || '-' }}</td>
                   <td>{{ formatDate(s.enrollmentDate) }}</td>
                   <td>
@@ -121,12 +121,12 @@
                       {{ s.isActive ? '在读' : '离校' }}
                     </span>
                   </td>
-                  <td v-if="auth.isAdmin">
+                  <td v-if="auth.isAdmin" class="action-cell">
                     <div class="action-buttons">
-                      <button class="btn-edit" @click="openEditModal(s.studentId)">
+                      <button class="btn btn-ghost" @click="openEditModal(s.studentId)">
                         <i class="fas fa-edit"></i> 编辑
                       </button>
-                      <button class="btn-delete-row" @click="showDeleteConfirm(s.studentId, s.studentName)">
+                      <button class="btn btn-danger" @click="showDeleteConfirm(s.studentId, s.studentName)">
                         <i class="fas fa-trash"></i> 删除
                       </button>
                     </div>
@@ -144,16 +144,17 @@
 
         <!-- 分页 -->
         <div v-if="totalPages > 1" class="pagination">
-          <button :disabled="currentPage === 1" @click="currentPage--">
+          <button class="btn btn-secondary" :disabled="currentPage === 1" @click="currentPage--">
             <i class="fas fa-chevron-left"></i>
           </button>
           <button
             v-for="p in totalPages"
             :key="p"
+            class="btn btn-secondary"
             :class="{ active: p === currentPage }"
             @click="currentPage = p"
           >{{ p }}</button>
-          <button :disabled="currentPage === totalPages" @click="currentPage++">
+          <button class="btn btn-secondary" :disabled="currentPage === totalPages" @click="currentPage++">
             <i class="fas fa-chevron-right"></i>
           </button>
         </div>
@@ -164,8 +165,8 @@
     <AppModal v-model="showModal" :title="editingId ? '编辑学生' : '新增学生'">
       <StudentForm ref="formRef" :student="editingStudent" />
       <template #footer>
-        <button class="btn-cancel" @click="showModal = false">取消</button>
-        <button class="btn-save" @click="saveStudent">保存</button>
+        <button class="btn btn-secondary" @click="showModal = false">取消</button>
+        <button class="btn btn-primary" @click="saveStudent">保存</button>
       </template>
     </AppModal>
 
@@ -344,306 +345,253 @@ function formatDate(d) {
 
 <style scoped>
 .page-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-bg);
   min-height: 100vh;
-  padding: 20px;
+  padding: var(--space-5);
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary);
   color: white;
-  padding: 30px;
+  padding: var(--space-8);
   text-align: center;
 }
-.header h1 { font-size: 2em; margin-bottom: 8px; }
+.header h1 { font-size: 2em; margin-bottom: var(--space-2); }
 .header p { font-size: 1em; opacity: 0.9; }
 
 .user-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
+  padding: var(--space-3) var(--space-5);
   background: rgba(255, 255, 255, 0.1);
-  margin-top: 20px;
-  border-radius: 8px;
-  font-size: 14px;
+  margin-top: var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
 }
-.user-info span { display: flex; align-items: center; gap: 8px; }
-
-.btn-logout {
-  background: rgba(255, 255, 255, 0.2);
+.user-info span { display: flex; align-items: center; gap: var(--space-2); }
+.user-info :deep(.btn-secondary) {
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 6px 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background 0.3s;
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
 }
-.btn-logout:hover { background: rgba(255, 255, 255, 0.3); }
+.user-info :deep(.btn-secondary:hover:not(:disabled)) {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.36);
+}
 
-.content { padding: 24px; }
+.content { padding: var(--space-6); }
 
 .filter-section {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 16px;
+  background: var(--color-surface-hover);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: var(--space-4);
   align-items: flex-end;
 }
 .search-box { flex: 2; min-width: 250px; }
 .filter-box { flex: 1; min-width: 150px; }
 .filter-box label, .search-box label {
   display: block;
-  margin-bottom: 5px;
-  color: #555;
-  font-size: 13px;
+  margin-bottom: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
   font-weight: 500;
 }
 .filter-box input, .filter-box select,
 .search-box input {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 14px;
-  transition: border-color 0.3s;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  transition: var(--transition-fast);
 }
 .filter-box input:focus, .filter-box select:focus,
 .search-box input:focus {
-  border-color: #667eea;
+  border-color: var(--color-primary);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 2px rgba(51, 65, 85, 0.1);
 }
 .filter-box input:disabled, .search-box input:disabled {
-  background: #e9ecef;
+  background: color-mix(in srgb, var(--color-surface-hover) 82%, black);
   cursor: not-allowed;
 }
 
-.filter-actions { display: flex; gap: 10px; align-items: center; }
-
-.btn-search {
-  background: #667eea;
-  color: white;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background 0.3s;
-}
-.btn-search:hover { background: #5a67d8; }
-
-.btn-reset {
-  background: #6c757d;
-  color: white;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background 0.3s;
-}
-.btn-reset:hover { background: #5a6268; }
+.filter-actions { display: flex; gap: var(--space-3); align-items: center; }
 
 .search-stats {
-  background: #e7f3ff;
-  padding: 10px 15px;
-  border-radius: 5px;
-  margin-bottom: 14px;
+  background: rgba(51, 65, 85, 0.06);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
-  color: #004085;
-  border-left: 4px solid #667eea;
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  border-left: 4px solid var(--color-primary);
 }
-.clear-search { color: #667eea; cursor: pointer; text-decoration: underline; font-size: 13px; }
+.clear-search {
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: var(--text-sm);
+}
 
 .toolbar {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.toolbar-left { display: flex; gap: 10px; }
+.toolbar-left { display: flex; gap: var(--space-3); }
 
-.btn-add {
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 9px 18px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background 0.3s;
-}
-.btn-add:hover { background: #218838; }
-
-.refresh-btn {
-  background: #667eea;
-  color: white;
-  border: none;
-  padding: 9px 18px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background 0.3s;
-}
-.refresh-btn:hover { background: #5a67d8; }
-
-.stats { color: #666; font-size: 14px; }
+.stats { color: var(--color-text-secondary); font-size: var(--text-base); }
 
 .table-container {
   overflow-x: auto;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-table { width: 100%; border-collapse: collapse; background: white; }
+.loading-icon {
+  color: var(--color-primary);
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+}
 
 th {
-  background: #f8f9fa;
-  color: #333;
-  font-weight: 600;
-  padding: 14px 12px;
+  height: 44px;
+  padding: 0 var(--space-3);
   text-align: left;
-  border-bottom: 2px solid #dee2e6;
   white-space: nowrap;
-  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid var(--color-border);
+}
+
+tbody tr {
+  height: 52px;
+  transition: var(--transition-fast);
+}
+
+tbody tr:hover {
+  background: var(--color-surface-hover);
 }
 
 td {
-  padding: 11px 12px;
-  border-bottom: 1px solid #dee2e6;
-  color: #555;
-  font-size: 14px;
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  vertical-align: middle;
 }
 
-tr:hover td { background: #f8f9fa; }
+tbody tr:last-child td {
+  border-bottom: none;
+}
 
-.status-badge {
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 12px;
+.cell-primary {
+  color: var(--color-text);
   font-weight: 500;
 }
-.status-active { background: #d4edda; color: #155724; }
-.status-inactive { background: #f8d7da; color: #721c24; }
 
-.action-buttons { display: flex; gap: 6px; }
+.cell-secondary {
+  color: var(--color-text-secondary);
+}
 
-.btn-edit {
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 4px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
+.action-cell {
+  text-align: right;
+}
+
+.status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  transition: background 0.3s;
-}
-.btn-edit:hover { background: #218838; }
-
-.btn-delete-row {
-  background: #dc3545;
-  color: white;
-  border: none;
-  padding: 4px 10px;
-  border-radius: 4px;
-  cursor: pointer;
+  height: 22px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
   font-size: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: background 0.3s;
+  font-weight: 500;
+  border-left: 2px solid currentColor;
 }
-.btn-delete-row:hover { background: #c82333; }
+.status-active {
+  color: var(--color-success);
+  background: rgba(21, 128, 61, 0.1);
+}
+.status-inactive {
+  color: var(--color-danger);
+  background: rgba(180, 35, 24, 0.08);
+}
 
-.loading { text-align: center; padding: 50px; color: #666; }
-.loading p { margin-top: 10px; }
+.action-buttons {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  opacity: 0.54;
+  transition: var(--transition-fast);
+}
+tr:hover .action-buttons {
+  opacity: 1;
+}
+.action-buttons :deep(.btn) {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.loading { text-align: center; padding: 50px; color: var(--color-text-secondary); }
+.loading p { margin-top: var(--space-2); }
 
 .error-message {
-  background: #f8d7da;
-  color: #721c24;
-  padding: 15px;
-  border-radius: 5px;
-  font-size: 14px;
+  background: rgba(180, 35, 24, 0.08);
+  color: var(--color-danger);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
 }
 
-.no-data { text-align: center; padding: 50px; color: #999; }
-.no-data p { margin-top: 10px; }
+.no-data { text-align: center; padding: 50px; color: var(--color-text-muted); }
+.no-data p { margin-top: var(--space-2); }
 
 .pagination {
   display: flex;
   justify-content: flex-end;
-  gap: 6px;
-  margin-top: 16px;
+  gap: var(--space-1);
+  margin-top: var(--space-4);
 }
-.pagination button {
+.pagination :deep(.btn) {
   min-width: 32px;
   height: 32px;
-  padding: 0 8px;
-  border: 1px solid #dee2e6;
-  background: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: all 0.2s;
+  padding: 0 var(--space-2);
 }
-.pagination button:hover:not(:disabled) { background: #f8f9fa; border-color: #667eea; }
-.pagination button.active { background: #667eea; color: white; border-color: #667eea; }
-.pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
-
-.btn-cancel {
-  background: #6c757d;
+.pagination :deep(.btn.active) {
+  background: var(--color-primary);
   color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s;
+  border-color: var(--color-primary);
 }
-.btn-cancel:hover { background: #5a6268; }
-
-.btn-save {
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.btn-save:hover { background: #218838; }
+.pagination :deep(.btn:disabled) { opacity: 0.4; }
 </style>
+
+
+

@@ -29,24 +29,24 @@ export default {
 <style scoped>
 .toast {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 12px 24px;
-  background: white;
-  border-radius: 5px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  top: var(--space-5);
+  right: var(--space-5);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
   z-index: 2000;
 }
-.toast.success { border-left: 4px solid #28a745; }
-.toast.success i { color: #28a745; font-size: 20px; }
-.toast.error { border-left: 4px solid #dc3545; }
-.toast.error i { color: #dc3545; font-size: 20px; }
+.toast.success { border-left: 4px solid var(--color-success); }
+.toast.success i { color: var(--color-success); font-size: 20px; }
+.toast.error { border-left: 4px solid var(--color-danger); }
+.toast.error i { color: var(--color-danger); font-size: 20px; }
 
 .slide-right-enter-active,
-.slide-right-leave-active { transition: all 0.3s; }
+.slide-right-leave-active { transition: var(--transition-base); }
 .slide-right-enter-from,
 .slide-right-leave-to { transform: translateX(120%); opacity: 0; }
 </style>

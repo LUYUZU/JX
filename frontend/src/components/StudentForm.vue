@@ -192,36 +192,37 @@ defineExpose({ validateAll, getFormData })
 <style scoped>
 .form-row {
   display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 .form-row .form-group { flex: 1; margin-bottom: 0; }
 
-.form-group { margin-bottom: 15px; }
+.form-group { margin-bottom: var(--space-4); }
 
 label {
   display: block;
-  margin-bottom: 5px;
-  color: #333;
+  margin-bottom: var(--space-1);
+  color: var(--color-text);
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--text-base);
 }
-.required { color: red; }
+.required { color: var(--color-danger); }
 
 input, select {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.3s;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
+  transition: var(--transition-fast);
 }
 input:focus, select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(51, 65, 85, 0.1);
 }
-.input-error { border-color: #dc3545 !important; }
-.error-text { color: #dc3545; font-size: 12px; margin-top: 4px; }
-.validation-hint { color: #666; font-size: 12px; margin-top: 3px; }
+.input-error { border-color: var(--color-danger) !important; }
+.error-text { color: var(--color-danger); font-size: var(--text-xs); margin-top: var(--space-1); }
+.validation-hint { color: var(--color-text-muted); font-size: var(--text-xs); margin-top: var(--space-1); }
 </style>
+

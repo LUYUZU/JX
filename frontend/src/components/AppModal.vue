@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h3>{{ title }}</h3>
-          <button class="close-btn" @click="$emit('update:modelValue', false)">&times;</button>
+          <button class="btn btn-ghost close-btn" @click="$emit('update:modelValue', false)">&times;</button>
         </div>
         <div class="modal-body">
           <slot />
@@ -32,17 +32,17 @@ defineEmits(['update:modelValue'])
   align-items: flex-start;
   justify-content: center;
   padding-top: 30px;
-  animation: fadeIn 0.3s;
+  animation: fadeIn var(--transition-base);
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-content {
-  background: white;
+  background: var(--color-surface);
   width: 600px;
   max-width: 95%;
-  border-radius: 10px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideIn 0.3s;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  animation: slideIn var(--transition-slow);
   max-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -53,40 +53,41 @@ defineEmits(['update:modelValue'])
 }
 
 .modal-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary);
   color: white;
-  padding: 15px 20px;
-  border-radius: 10px 10px 0 0;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
 }
-.modal-header h3 { margin: 0; font-size: 1.2em; }
+.modal-header h3 { margin: 0; font-size: var(--text-lg); }
 
 .close-btn {
-  background: none;
-  border: none;
+  width: 36px;
+  min-width: 36px;
+  padding: 0;
   color: white;
   font-size: 24px;
-  cursor: pointer;
-  opacity: 0.8;
   line-height: 1;
 }
-.close-btn:hover { opacity: 1; }
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
 
 .modal-body {
-  padding: 20px;
+  padding: var(--space-5);
   overflow-y: auto;
 }
 
 .modal-footer {
-  background: #f8f9fa;
-  padding: 15px 20px;
-  border-radius: 0 0 10px 10px;
+  background: var(--color-surface-hover);
+  padding: var(--space-4) var(--space-5);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: var(--space-3);
   flex-shrink: 0;
 }
 </style>
