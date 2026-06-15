@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx vite *)",
+      "Bash(mvn compile *)",
+      "Bash(mvn spring-boot:run)",
+      "Bash(sc query *)",
+      "Read(//c/Program Files/Microsoft SQL Server/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Bash(mysql -u root -e \"SHOW DATABASES;\")",
+      "Bash(mysql -u root --password=\"\" -e \"SHOW DATABASES;\")",
+      "Bash(mysql -u root -proot -e \"SHOW DATABASES;\")",
+      "Bash(env)",
+      "Bash(mysql *)",
+      "Bash(mvn clean *)",
+      "Bash(netstat -ano)",
+      "Bash(powershell *)",
+      "Bash(curl *)",
+      "Bash(icacls \"C:\\\\ProgramData\\\\MySQL\\\\MySQL Server 8.0\\\\Data\")",
+      "Bash(cmd.exe *)"
+    ]
+  }
+}

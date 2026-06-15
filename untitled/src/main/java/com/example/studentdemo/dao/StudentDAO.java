@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class StudentDAO {
@@ -146,5 +147,42 @@ public class StudentDAO {
     public List<String> getAllGrades() {
         String sql = "SELECT DISTINCT Grade FROM Students WHERE IsActive = 1 AND Grade IS NOT NULL AND Grade != '' ORDER BY Grade";
         return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    // 10. 统计数据 - 学生总数
+    public int getTotalStudentCount() {
+        String sql = "SELECT COUNT(*) FROM Students WHERE IsActive = 1";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        return count != null ? count : 0;
+    }
+
+    // 11. 统计数据 - 按专业分组
+    public List<Map<String, Object>> getStudentCountByMajor() {
+        String sql = "SELECT IFNULL(Major, '未知') as name, COUNT(*) as value FROM Students WHERE IsActive = 1 AND Major IS NOT NULL AND Major != '' GROUP BY Major ORDER BY COUNT(*) DESC";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    // 12. 统计数据 - 按年级分组
+    public List<Map<String, Object>> getStudentCountByGrade() {
+        String sql = "SELECT IFNULL(Grade, '未知') as name, COUNT(*) as value FROM Students WHERE IsActive = 1 AND Grade IS NOT NULL AND Grade != '' GROUP BY Grade ORDER BY Grade";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    // 13. 统计数据 - 按性别分组
+    public List<Map<String, Object>> getStudentCountByGender() {
+        String sql = "SELECT IFNULL(Gender, '未知') as name, COUNT(*) as value FROM Students WHERE IsActive = 1 AND Gender IS NOT NULL AND Gender != '' GROUP BY Gender";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    // 14. 统计数据 - 入学趋势（按年份）
+    public List<Map<String, Object>> getEnrollmentTrend() {
+        String sql = "SELECT YEAR(EnrollmentDate) as year, COUNT(*) as count FROM Students WHERE IsActive = 1 AND EnrollmentDate IS NOT NULL GROUP BY YEAR(EnrollmentDate) ORDER BY YEAR(EnrollmentDate)";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    // 15. 最近入学的学生
+    public List<Student> getRecentStudents(int limit) {
+        String sql = "SELECT * FROM Students WHERE IsActive = 1 ORDER BY StudentID DESC LIMIT ?";
+        return jdbcTemplate.query(sql, studentRowMapper, limit);
     }
 }

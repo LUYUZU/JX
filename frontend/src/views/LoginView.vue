@@ -86,7 +86,7 @@ onMounted(async () => {
   if (auth.token) {
     try {
       const res = await verify(auth.token)
-      if (res.data.success) router.push('/students')
+      if (res.data.success) router.push('/dashboard')
     } catch {
       auth.clearAuth()
     }
@@ -104,7 +104,7 @@ async function handleLogin() {
     const res = await login(username.value.trim(), password.value.trim())
     if (res.data.success) {
       auth.setAuth(res.data.token, res.data.user)
-      router.push('/students')
+      router.push('/dashboard')
     } else {
       errorMsg.value = res.data.message || '登录失败'
     }

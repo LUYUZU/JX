@@ -1,23 +1,14 @@
 <template>
-  <div class="page-bg">
-    <div class="container">
-      <!-- 头部 -->
-      <div class="header">
-        <h1><i class="fas fa-graduation-cap"></i> 学生信息管理系统</h1>
-        <p>搜索、筛选、数据校验完整功能</p>
-        <div class="user-info">
-          <span>
-            <i class="fas fa-user-circle"></i>
-            {{ auth.user?.realName }} ({{ auth.isAdmin ? '管理员' : '学生' }})
-          </span>
-          <button class="btn btn-secondary" @click="logout">
-            <i class="fas fa-sign-out-alt"></i> 退出登录
-          </button>
-        </div>
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1><i class="fas fa-users"></i> 学生管理</h1>
+        <p class="page-desc">搜索、筛选与管理学生档案</p>
       </div>
+    </div>
 
-      <div class="content">
-        <!-- 搜索筛选 -->
+    <div class="content">
+      <!-- 搜索筛选 -->
         <div class="filter-section">
           <div class="search-box">
             <label><i class="fas fa-search"></i> 搜索（姓名/学号）</label>
@@ -74,6 +65,9 @@
             </button>
             <button class="btn btn-secondary" @click="loadStudents">
               <i class="fas fa-sync-alt"></i> 刷新数据
+            </button>
+            <button class="btn btn-secondary" @click="exportExcel">
+              <i class="fas fa-file-excel"></i> 导出Excel
             </button>
           </div>
           <div class="stats">共 <strong>{{ students.length }}</strong> 条记录</div>
@@ -159,7 +153,6 @@
           </button>
         </div>
       </div>
-    </div>
 
     <!-- 学生表单弹窗 -->
     <AppModal v-model="showModal" :title="editingId ? '编辑学生' : '新增学生'">
@@ -181,15 +174,14 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import * as XLSX from 'xlsx'
 import { getStudents, getStudent, addStudent, updateStudent, deleteStudent, getMajors } from '../api/student'
 import { showToast } from '../components/AppToast.vue'
 import AppModal from '../components/AppModal.vue'
 import StudentForm from '../components/StudentForm.vue'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
 
-const router = useRouter()
 const auth = useAuthStore()
 
 const students = ref([])
@@ -333,63 +325,53 @@ async function confirmDelete() {
   }
 }
 
-function logout() {
-  auth.clearAuth()
-  router.push('/login')
-}
-
 function formatDate(d) {
   return d ? new Date(d).toLocaleDateString('zh-CN') : '-'
+}
+
+function exportExcel() {
+  const data = students.value.map(s => ({
+    '姓名': s.studentName,
+    '学号': s.studentNumber,
+    '性别': s.gender || '-',
+    '年龄': s.age ?? '-',
+    '专业': s.major || '-',
+    '年级': s.grade || '-',
+    '邮箱': s.email || '-',
+    '入学日期': formatDate(s.enrollmentDate),
+    '状态': s.isActive ? '在读' : '离校'
+  }))
+  const ws = XLSX.utils.json_to_sheet(data)
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, '学生信息')
+  XLSX.writeFile(wb, `学生信息_${new Date().toLocaleDateString('zh-CN')}.xlsx`)
 }
 </script>
 
 <style scoped>
-.page-bg {
-  background: var(--color-bg);
-  min-height: 100vh;
-  padding: var(--space-5);
-}
-
-.container {
+.page {
+  padding: var(--space-6) var(--space-8);
   max-width: 1200px;
-  margin: 0 auto;
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
 }
 
-.header {
-  background: var(--color-primary);
-  color: white;
-  padding: var(--space-8);
-  text-align: center;
+.page-header {
+  margin-bottom: var(--space-6);
 }
-.header h1 { font-size: 2em; margin-bottom: var(--space-2); }
-.header p { font-size: 1em; opacity: 0.9; }
 
-.user-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-3) var(--space-5);
-  background: rgba(255, 255, 255, 0.1);
-  margin-top: var(--space-5);
-  border-radius: var(--radius-md);
+.page-header h1 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.page-desc {
+  color: var(--color-text-muted);
   font-size: var(--text-base);
-}
-.user-info span { display: flex; align-items: center; gap: var(--space-2); }
-.user-info :deep(.btn-secondary) {
-  color: white;
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.08);
-}
-.user-info :deep(.btn-secondary:hover:not(:disabled)) {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.36);
+  margin-top: var(--space-1);
 }
 
-.content { padding: var(--space-6); }
+.content {}
 
 .filter-section {
   background: var(--color-surface-hover);

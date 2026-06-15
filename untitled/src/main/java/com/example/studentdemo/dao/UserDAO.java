@@ -36,6 +36,22 @@ public class UserDAO {
         }
     };
 
+    // 根据ID查询用户
+    public User findById(Integer userId) {
+        String sql = "SELECT * FROM Users WHERE UserID = ? AND IsActive = 1";
+        try {
+            return jdbcTemplate.queryForObject(sql, userRowMapper, userId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // 获取所有教师
+    public List<User> findAllTeachers() {
+        String sql = "SELECT * FROM Users WHERE Role = 'teacher' AND IsActive = 1 ORDER BY RealName";
+        return jdbcTemplate.query(sql, userRowMapper);
+    }
+
     // 根据用户名查询用户
     public User findByUsername(String username) {
         String sql = "SELECT * FROM Users WHERE Username = ? AND IsActive = 1";
@@ -62,7 +78,7 @@ public class UserDAO {
 
     // 更新最后登录时间
     public void updateLastLoginTime(String username) {
-        String sql = "UPDATE Users SET LastLoginAt = GETDATE() WHERE Username = ?";
+        String sql = "UPDATE Users SET LastLoginAt = NOW() WHERE Username = ?";
         jdbcTemplate.update(sql, username);
     }
     // 添加用户账号
